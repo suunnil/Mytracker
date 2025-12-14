@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Daily Fitness Tracker</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+  padding: 15px;
+}
+h2 { text-align: center; }
+.card {
+  background: white;
+  padding: 15px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+}
+label { display: block; margin: 6px 0; }
+input, select, textarea {
+  width: 100%;
+  padding: 6px;
+  margin-top: 4px;
+}
+button {
+  width: 100%;
+  padding: 10px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  font-size: 16px;
+  border-radius: 6px;
+}
+.progress {
+  font-weight: bold;
+  text-align: center;
+  margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🏋️ Daily Fitness Tracker</h2>
+
+<div class="card">
+<label>Date
+<input type="date" id="date">
+</label>
+</div>
+
+<div class="card">
+<label><input type="checkbox" id="morningPosture"> Morning Posture Done</label>
+<label><input type="checkbox" id="inclinePushups"> Incline Push-Ups (2×10)</label>
+<label><input type="checkbox" id="eveningPosture"> Evening Posture Done</label>
+<label><input type="checkbox" id="gymWorkout"> Gym Workout Done</label>
+<label><input type="checkbox" id="walkDone"> Walk (20–30 min)</label>
+</div>
+
+<div class="card">
+<label>Workout Type
+<select id="workoutType">
+<option>Rest</option>
+<option>Push</option>
+<option>Pull</option>
+<option>Legs</option>
+</select>
+</label>
+</div>
+
+<div class="card">
+<label>Water Intake (Liters)
+<input type="number" id="water" step="0.1" placeholder="e.g. 3">
+</label>
+</div>
+
+<div class="card">
+<label>Food / Notes
+<textarea id="notes" rows="3"
+placeholder="Example: Paneer + roti, salt lassi, belly little bloated"></textarea>
+</label>
+</div>
+
+<button onclick="saveData()">Save Today</button>
+
+<div class="progress" id="progress"></div>
+
+<script>
+const today = new Date().toISOString().split('T')[0];
+document.getElementById("date").value = today;
+loadData();
+
+function saveData() {
+  const data = {
+    morningPosture: morningPosture.checked,
+    inclinePushups: inclinePushups.checked,
+    eveningPosture: eveningPosture.checked,
+    gymWorkout: gymWorkout.checked,
+    walkDone: walkDone.checked,
+    workoutType: workoutType.value,
+    water: water.value,
+    notes: notes.value
+  };
+
+  localStorage.setItem(date.value, JSON.stringify(data));
+  calculateProgress();
+  alert("Saved successfully 👍");
+}
+
+function loadData() {
+  const saved = localStorage.getItem(date.value);
+  if (!saved) return;
+  const data = JSON.parse(saved);
+
+  morningPosture.checked = data.morningPosture;
+  inclinePushups.checked = data.inclinePushups;
+  eveningPosture.checked = data.eveningPosture;
+  gymWorkout.checked = data.gymWorkout;
+  walkDone.checked = data.walkDone;
+  workoutType.value = data.workoutType;
+  water.value = data.water;
+  notes.value = data.notes;
+
+  calculateProgress();
+}
+
+function calculateProgress() {
+  let total = 5;
+  let done = 0;
+  if (morningPosture.checked) done++;
+  if (inclinePushups.checked) done++;
+  if (eveningPosture.checked) done++;
+  if (gymWorkout.checked) done++;
+  if (walkDone.checked) done++;
+
+  document.getElementById("progress").innerText =
+    "Daily Progress: " + Math.round((done / total) * 100) + "%";
+}
+
+date.onchange = loadData;
+</script>
+
+</body>
+</html>
